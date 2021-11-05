@@ -31,8 +31,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	ochacafev1alpha1 "github.com/oracle-japan/ochacafe-operator-introduction/api/v1alpha1"
-	"github.com/oracle-japan/ochacafe-operator-introduction/controllers"
+	ochacafev1alpha1 "github.com/oracle-japan/ochacafe-operator-intro/api/v1alpha1"
+	"github.com/oracle-japan/ochacafe-operator-intro/controllers"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -71,7 +71,7 @@ func main() {
 		Port:                   9443,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
-		LeaderElectionID:       "1c3de6cc.com.oralce",
+		LeaderElectionID:       "a9985502.oracle.com",
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")

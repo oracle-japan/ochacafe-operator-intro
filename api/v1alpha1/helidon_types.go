@@ -27,8 +27,6 @@ import (
 type HelidonSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-
-	// Size is an example field of Helidon. Edit helidon_types.go to remove/update
 	Size int32 `json:"size"`
 }
 

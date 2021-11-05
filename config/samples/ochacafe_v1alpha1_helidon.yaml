@@ -1,6 +1,7 @@
-apiVersion: ochacafe.com.oralce/v1alpha1
+apiVersion: ochacafe.oracle.com/v1alpha1
 kind: Helidon
 metadata:
   name: helidon-sample
 spec:
-  size: 2
+  # Add fields here
+  foo: bar

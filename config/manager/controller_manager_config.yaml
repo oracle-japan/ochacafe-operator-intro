@@ -8,4 +8,4 @@ webhook:
   port: 9443
 leaderElection:
   leaderElect: true
-  resourceName: 1c3de6cc.com.oralce
+  resourceName: a9985502.oracle.com

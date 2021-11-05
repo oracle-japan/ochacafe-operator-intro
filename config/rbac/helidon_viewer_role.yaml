@@ -5,7 +5,7 @@ metadata:
   name: helidon-viewer-role
 rules:
 - apiGroups:
-  - ochacafe.com.oralce
+  - ochacafe.oracle.com
   resources:
   - helidons
   verbs:
@@ -13,7 +13,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - ochacafe.com.oralce
+  - ochacafe.oracle.com
   resources:
   - helidons/status
   verbs:

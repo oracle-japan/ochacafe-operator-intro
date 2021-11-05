@@ -5,7 +5,7 @@ metadata:
   name: helidon-editor-role
 rules:
 - apiGroups:
-  - ochacafe.com.oralce
+  - ochacafe.oracle.com
   resources:
   - helidons
   verbs:
@@ -17,7 +17,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - ochacafe.com.oralce
+  - ochacafe.oracle.com
   resources:
   - helidons/status
   verbs:

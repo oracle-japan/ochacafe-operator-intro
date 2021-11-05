@@ -7,7 +7,7 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - ochacafe.com.oralce
+  - ochacafe.oracle.com
   resources:
   - helidons
   verbs:
@@ -19,13 +19,13 @@ rules:
   - update
   - watch
 - apiGroups:
-  - ochacafe.com.oralce
+  - ochacafe.oracle.com
   resources:
   - helidons/finalizers
   verbs:
   - update
 - apiGroups:
-  - ochacafe.com.oralce
+  - ochacafe.oracle.com
   resources:
   - helidons/status
   verbs:

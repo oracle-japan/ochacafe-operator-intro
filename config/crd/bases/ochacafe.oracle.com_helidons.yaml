@@ -6,9 +6,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.6.1
   creationTimestamp: null
-  name: helidons.ochacafe.com.oralce
+  name: helidons.ochacafe.oracle.com
 spec:
-  group: ochacafe.com.oralce
+  group: ochacafe.oracle.com
   names:
     kind: Helidon
     listKind: HelidonList
@@ -37,8 +37,8 @@ spec:
             description: HelidonSpec defines the desired state of Helidon
             properties:
               size:
-                description: Size is an example field of Helidon. Edit helidon_types.go
-                  to remove/update
+                description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+                  Important: Run "make" to regenerate code after modifying this file'
                 format: int32
                 type: integer
             required:
