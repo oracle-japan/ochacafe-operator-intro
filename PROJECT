@@ -1,0 +1,19 @@
+domain: com.oralce
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: ochacafe-operator-introduction
+repo: github.com/oracle-japan/ochacafe-operator-introduction
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: com.oralce
+  group: ochacafe
+  kind: Helidon
+  path: github.com/oracle-japan/ochacafe-operator-introduction/api/v1alpha1
+  version: v1alpha1
+version: "3"

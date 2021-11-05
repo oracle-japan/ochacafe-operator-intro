@@ -1,0 +1,20 @@
+# permissions for end users to view helidons.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: helidon-viewer-role
+rules:
+- apiGroups:
+  - ochacafe.com.oralce
+  resources:
+  - helidons
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ochacafe.com.oralce
+  resources:
+  - helidons/status
+  verbs:
+  - get
