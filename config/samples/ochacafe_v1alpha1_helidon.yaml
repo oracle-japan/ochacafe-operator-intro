@@ -3,5 +3,4 @@ kind: Helidon
 metadata:
   name: helidon-sample
 spec:
-  # Add fields here
-  foo: bar
+  size: 2

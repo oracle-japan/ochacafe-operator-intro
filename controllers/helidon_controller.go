@@ -154,8 +154,8 @@ func (r *HelidonReconciler) deploymentForHelidon(m *ochacafev1alpha1.Helidon) *a
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{{
-						Image: "nri.ocir.io/orasejapan/ochacafe-demo",
-						Name:  "helidon",
+						Image: "schnatterer/helidon-getting-started",
+						Name:  "helidon-app",
 						Ports: []corev1.ContainerPort{{
 							ContainerPort: 8080,
 						}},
