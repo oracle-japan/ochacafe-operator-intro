@@ -107,35 +107,35 @@ func (r *HelidonReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		return ctrl.Result{Requeue: true}, nil
 	}
 
-	// 4. Update the Memcached status with the pod names
-	// List the pods for this memcached's deployment
+	// 4. Update the Helidon status with the pod names
+	// List the pods for this helidon's deployment
 	podList := &corev1.PodList{}
 	listOpts := []client.ListOption{
 		client.InNamespace(helidon.Namespace),
 		client.MatchingLabels(labelsForHelidon(helidon.Name)),
 	}
 	if err = r.List(ctx, podList, listOpts...); err != nil {
-		log.Error(err, "4. Update the Memcached status with the pod names. Failed to list pods", "Memcached.Namespace", helidon.Namespace, "Memcached.Name", helidon.Name)
+		log.Error(err, "4. Update the Helidon status with the pod names. Failed to list pods", "Helidon.Namespace", helidon.Namespace, "Helidon.Name", helidon.Name)
 		return ctrl.Result{}, err
 	}
 	podNames := getPodNames(podList.Items)
-	log.Info("4. Update the Memcached status with the pod names. Pod list", "podNames", podNames)
+	log.Info("4. Update the Helidon status with the pod names. Pod list", "podNames", podNames)
 
 	// Update status.Nodes if needed
 	if !reflect.DeepEqual(podNames, helidon.Status.Nodes) {
 		helidon.Status.Nodes = podNames
 		err := r.Status().Update(ctx, helidon)
 		if err != nil {
-			log.Error(err, "4. Update the Memcached status with the pod names. Failed to update Memcached status")
+			log.Error(err, "4. Update the Helidon status with the pod names. Failed to update Helidon status")
 			return ctrl.Result{}, err
 		}
 	}
-	log.Info("4. Update the Memcached status with the pod names. Update memcached.Status", "memcached.Status.Nodes", helidon.Status.Nodes)
+	log.Info("4. Update the Helidon status with the pod names. Update helidon.Status", "helidon.Status.Nodes", helidon.Status.Nodes)
 
 	return ctrl.Result{}, nil
 }
 
-// deploymentForMemcached returns a memcached Deployment object
+// deploymentForHelidon returns a helidon Deployment object
 func (r *HelidonReconciler) deploymentForHelidon(m *ochacafev1alpha1.Helidon) *appsv1.Deployment {
 	ls := labelsForHelidon(m.Name)
 	replicas := m.Spec.Size
@@ -166,13 +166,13 @@ func (r *HelidonReconciler) deploymentForHelidon(m *ochacafev1alpha1.Helidon) *a
 			},
 		},
 	}
-	// Set Memcached instance as the owner and controller
+	// Set Helidon instance as the owner and controller
 	ctrl.SetControllerReference(m, dep, r.Scheme)
 	return dep
 }
 
-// labelsForMemcached returns the labels for selecting the resources
-// belonging to the given memcached CR name.
+// labelsForHelidon returns the labels for selecting the resources
+// belonging to the given helidon CR name.
 func labelsForHelidon(name string) map[string]string {
 	return map[string]string{"app": "helidon", "helidon_cr": name}
 }
