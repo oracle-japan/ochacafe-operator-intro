@@ -29,9 +29,8 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
+	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 
-	"github.com/go-logr/logr"
 	ochacafev1alpha1 "github.com/oracle-japan/ochacafe-operator-intro/api/v1alpha1"
 )
 
@@ -39,8 +38,6 @@ import (
 type HelidonReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
-
-	Log logr.Logger
 }
 
 //+kubebuilder:rbac:groups=ochacafe.oracle.com,resources=helidons,verbs=get;list;watch;create;update;patch;delete
@@ -59,9 +56,7 @@ type HelidonReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.10.0/pkg/reconcile
 func (r *HelidonReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
-
-	log := r.Log.WithValues("helidon", req.NamespacedName)
+	log := ctrllog.FromContext(ctx)
 
 	// 1. Fetch the Helidon instance
 	helidon := &ochacafev1alpha1.Helidon{}
@@ -134,10 +129,6 @@ func (r *HelidonReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		}
 	}
 	log.Info("4. Update the Helidon status with the pod names. Update helidon.Status", "helidon.Status.Nodes", helidon.Status.Nodes)
-
-	return ctrl.Result{}, nil
-
-	// your logic here
 
 	return ctrl.Result{}, nil
 }
