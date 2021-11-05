@@ -29,6 +29,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	"github.com/go-logr/logr"
 	ochacafev1alpha1 "github.com/oracle-japan/ochacafe-operator-intro/api/v1alpha1"
@@ -37,17 +38,14 @@ import (
 // HelidonReconciler reconciles a Helidon object
 type HelidonReconciler struct {
 	client.Client
-	Log    logr.Logger
 	Scheme *runtime.Scheme
 
-	currentLogger logr.Logger
+	Log logr.Logger
 }
 
 //+kubebuilder:rbac:groups=ochacafe.oracle.com,resources=helidons,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=ochacafe.oracle.com,resources=helidons/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=ochacafe.oracle.com,resources=helidons/finalizers,verbs=update
-//+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -57,23 +55,25 @@ type HelidonReconciler struct {
 // the user.
 //
 // For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.9.2/pkg/reconcile
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.10.0/pkg/reconcile
 func (r *HelidonReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	r.currentLogger = r.Log.WithValues("helidon", req.NamespacedName)
+	_ = log.FromContext(ctx)
+
+	log := r.Log.WithValues("helidon", req.NamespacedName)
 
 	// 1. Fetch the Helidon instance
 	helidon := &ochacafev1alpha1.Helidon{}
 	err := r.Get(ctx, req.NamespacedName, helidon)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			r.currentLogger.Info("1. Fetch the Helidon instance. Helidon resource not found. Ignoring since object must be deleted")
+			log.Info("1. Fetch the Helidon instance. Helidon resource not found. Ignoring since object must be deleted")
 			return ctrl.Result{}, err
 		}
 		// Error reading the object - requeue the request.
-		r.currentLogger.Error(err, "1. Fetch the Helidon instance. Failed to get Helidon")
+		log.Error(err, "1. Fetch the Helidon instance. Failed to get Helidon")
 		return ctrl.Result{}, err
 	}
-	r.currentLogger.Info("1. Fetch the Helidon instance. Helidon resource found", "helidon.Name", helidon.Name, "helidon.Namespace", helidon.Namespace)
+	log.Info("1. Fetch the Helidon instance. Helidon resource found", "helidon.Name", helidon.Name, "helidon.Namespace", helidon.Namespace)
 
 	// 2. Check if the deployment already exists, if not create a new one
 	found := &appsv1.Deployment{}
@@ -81,16 +81,16 @@ func (r *HelidonReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	if err != nil && errors.IsNotFound(err) {
 		// Define a new deployment
 		dep := r.deploymentForHelidon(helidon)
-		r.currentLogger.Info("2. Check if the deployment already exists, if not create a new one. Creating a new Deployment", "Deployment.Namespace", dep.Namespace, "Deployment.Name", dep.Name)
+		log.Info("2. Check if the deployment already exists, if not create a new one. Creating a new Deployment", "Deployment.Namespace", dep.Namespace, "Deployment.Name", dep.Name)
 		err = r.Create(ctx, dep)
 		if err != nil {
-			r.currentLogger.Error(err, "2. Check if the deployment already exists, if not create a new one. Failed to create new Deployment", "Deployment.Namespace", dep.Namespace, "Deployment.Name", dep.Name)
+			log.Error(err, "2. Check if the deployment already exists, if not create a new one. Failed to create new Deployment", "Deployment.Namespace", dep.Namespace, "Deployment.Name", dep.Name)
 			return ctrl.Result{}, err
 		}
 		// Deployment created successfully - return and requeue
 		return ctrl.Result{Requeue: true}, nil
 	} else if err != nil {
-		r.currentLogger.Error(err, "2. Check if the deployment already exists, if not create a new one. Failed to get Deployment")
+		log.Error(err, "2. Check if the deployment already exists, if not create a new one. Failed to get Deployment")
 		return ctrl.Result{}, err
 	}
 
@@ -100,11 +100,11 @@ func (r *HelidonReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		found.Spec.Replicas = &size
 		err = r.Update(ctx, found)
 		if err != nil {
-			r.currentLogger.Error(err, "3. Ensure the deployment size is the same as the spec. Failed to update Deployment", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)
+			log.Error(err, "3. Ensure the deployment size is the same as the spec. Failed to update Deployment", "Deployment.Namespace", found.Namespace, "Deployment.Name", found.Name)
 			return ctrl.Result{}, err
 		}
 		// Spec updated - return and requeue
-		r.currentLogger.Info("3. Ensure the deployment size is the same as the spec. Update deployment size", "Deployment.Spec.Replicas", size)
+		log.Info("3. Ensure the deployment size is the same as the spec. Update deployment size", "Deployment.Spec.Replicas", size)
 		return ctrl.Result{Requeue: true}, nil
 	}
 
@@ -116,32 +116,28 @@ func (r *HelidonReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		client.MatchingLabels(labelsForHelidon(helidon.Name)),
 	}
 	if err = r.List(ctx, podList, listOpts...); err != nil {
-		r.currentLogger.Error(err, "4. Update the Helidon status with the pod names. Failed to list pods", "Helidon.Namespace", helidon.Namespace, "Helidon.Name", helidon.Name)
+		log.Error(err, "4. Update the Helidon status with the pod names. Failed to list pods", "Helidon.Namespace", helidon.Namespace, "Helidon.Name", helidon.Name)
 		return ctrl.Result{}, err
 	}
 	podNames := getPodNames(podList.Items)
-	r.currentLogger.Info("4. Update the Helidon status with the pod names. Pod list", "podNames", podNames)
+	log.Info("4. Update the Helidon status with the pod names. Pod list", "podNames", podNames)
 
 	// Update status.Nodes if needed
 	if !reflect.DeepEqual(podNames, helidon.Status.Nodes) {
 		helidon.Status.Nodes = podNames
 		err := r.Status().Update(ctx, helidon)
 		if err != nil {
-			r.currentLogger.Error(err, "4. Update the Helidon status with the pod names. Failed to update Helidon status")
+			log.Error(err, "4. Update the Helidon status with the pod names. Failed to update Helidon status")
 			return ctrl.Result{}, err
 		}
 	}
-	r.currentLogger.Info("4. Update the Helidon status with the pod names. Update helidon.Status", "helidon.Status.Nodes", helidon.Status.Nodes)
+	log.Info("4. Update the Helidon status with the pod names. Update helidon.Status", "helidon.Status.Nodes", helidon.Status.Nodes)
 
 	return ctrl.Result{}, nil
-}
 
-// SetupWithManager sets up the controller with the Manager.
-func (r *HelidonReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewControllerManagedBy(mgr).
-		For(&ochacafev1alpha1.Helidon{}).
-		Owns(&appsv1.Deployment{}).
-		Complete(r)
+	// your logic here
+
+	return ctrl.Result{}, nil
 }
 
 // deploymentForHelidon returns a helidon Deployment object
@@ -193,4 +189,12 @@ func getPodNames(pods []corev1.Pod) []string {
 		podNames = append(podNames, pod.Name)
 	}
 	return podNames
+}
+
+// SetupWithManager sets up the controller with the Manager.
+func (r *HelidonReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&ochacafev1alpha1.Helidon{}).
+		Owns(&appsv1.Deployment{}).
+		Complete(r)
 }

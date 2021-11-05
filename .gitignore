@@ -23,4 +23,8 @@ testbin/*
 *.swp
 *.swo
 *~
-*.DS_Store
+config/crd/.DS_Store
+.gitignore
+config/scorecard/.DS_Store
+config/.DS_Store
+.DS_Store

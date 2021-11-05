@@ -4,7 +4,7 @@ layout:
 plugins:
   manifests.sdk.operatorframework.io/v2: {}
   scorecard.sdk.operatorframework.io/v2: {}
-projectName: helidon-operator
+projectName: ochacafe-operator-intro
 repo: github.com/oracle-japan/ochacafe-operator-intro
 resources:
 - api:
