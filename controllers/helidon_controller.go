@@ -42,9 +42,9 @@ type HelidonReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=ochacafe.ochacafe.io,resources=helidons,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=ochacafe.ochacafe.io,resources=helidons/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=ochacafe.ochacafe.io,resources=helidons/finalizers,verbs=update
+//+kubebuilder:rbac:groups=ochacafe.com.oralce,resources=helidons,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=ochacafe.com.oralce,resources=helidons/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=ochacafe.com.oralce,resources=helidons/finalizers,verbs=update
 //+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;
 
