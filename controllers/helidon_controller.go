@@ -46,6 +46,8 @@ type HelidonReconciler struct {
 //+kubebuilder:rbac:groups=ochacafe.oracle.com,resources=helidons,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=ochacafe.oracle.com,resources=helidons/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=ochacafe.oracle.com,resources=helidons/finalizers,verbs=update
+//+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
