@@ -31,12 +31,14 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
+	"github.com/go-logr/logr"
 	ochacafev1alpha1 "github.com/oracle-japan/ochacafe-operator-introduction/api/v1alpha1"
 )
 
 // HelidonReconciler reconciles a Helidon object
 type HelidonReconciler struct {
 	client.Client
+	Log    logr.Logger
 	Scheme *runtime.Scheme
 }
 
