@@ -140,6 +140,7 @@ func (r *HelidonReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 func (r *HelidonReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&ochacafev1alpha1.Helidon{}).
+		Owns(&appsv1.Deployment{}).
 		Complete(r)
 }
 
