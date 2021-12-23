@@ -27,7 +27,6 @@ var _ = Describe("Helidon Operator", func() {
 		err = k8sClient.DeleteAllOf(ctx, &appsv1.Deployment{}, client.InNamespace("defualt"))
 		Expect(err).NotTo(HaveOccurred())
 
-		cfg, err := testEnv.Start()
 		mgr, err := ctrl.NewManager(cfg, ctrl.Options{
 			Scheme: scheme,
 		})
