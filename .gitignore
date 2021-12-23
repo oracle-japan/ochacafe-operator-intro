@@ -28,3 +28,5 @@ config/crd/.DS_Store
 config/scorecard/.DS_Store
 config/.DS_Store
 .DS_Store
+.vscode
+cover.html
