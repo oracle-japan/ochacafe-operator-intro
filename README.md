@@ -37,7 +37,7 @@ IMAGE_TAG_BASE ?= nrt.ocir.io/orasejapan/helidon_operator
 #### 1.OLMのインストール
 
 ```sh
-operator-sdk olm install --version=v0.18.3
+operator-sdk olm install
 ```
 
 #### 2.Operatorコンテナイメージのビルドとプッシュ
@@ -75,7 +75,7 @@ make deploy
 ## 3.CR(カスタム・リソース)のデプロイ
 
 ```sh
-kuebctl apply -f config/samples/ochacafe_v1alpha1_helidon.yaml
+kubectl apply -f config/samples/ochacafe_v1alpha1_helidon.yaml
 ```
 
 ## 4.クリーンアップ
