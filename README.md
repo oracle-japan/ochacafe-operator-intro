@@ -1,6 +1,5 @@
 # [OCHaCafe Season5 #1 「Kubernetes Operator超入門」](https://ochacafe.connpass.com/event/232810/)の"任意のDeploymentを作成してみるOperator"
 
-
 ## 1. このOperatorが行うこと
 
 ![img/001.png](img/001.png)
@@ -22,7 +21,13 @@ IMAGE_TAG_BASE ?= oracle.com/ochacafe-operator-intro
 例：
 
 ```sh
-IMAGE_TAG_BASE ?= nrt.ocir.io/orasejapan/ochacafe_operator
+IMAGE_TAG_BASE ?= nrt.ocir.io/orasejapan/ochacafe_sample_operator
+```
+
+以下のコマンドを実行し、Operatorのビルドとコンテナレジストリへのプッシュを実行
+
+```sh
+make docker-build docker-push
 ```
 
 ### OLM(Operator Lifecyle Management)を利用する場合
@@ -47,24 +52,18 @@ make bundle bundle-build bundle-push
 #### 3.デプロイ
 
 ```sh
-operator-sdk run bundle <プッシュ先のコンテナ・レジストリのフルパス>
+operator-sdk run bundle <共通手順で定義したイメージのフルパス>-bundle:v0.0.1
 ```
 
 例：
 
 ```sh
-operator-sdk run bundle nrt.ocir.io/orasejapan/ochacafe_operator-bundle:v0.0.1
+operator-sdk run bundle nrt.ocir.io/orasejapan/ochacafe_sample_operator-bundle:v0.0.1
 ```
 
 ### ダイレクトデプロイを利用する場合
 
-#### 1.Operatorコンテナイメージのビルドとプッシュ
-
-```sh
-make docker-build docker-push
-```
-
-#### 2.デプロイ
+#### 1.デプロイ
 
 ```sh
 make deploy 
