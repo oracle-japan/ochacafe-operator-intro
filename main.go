@@ -1,5 +1,5 @@
 /*
-Copyright 2021.
+Copyright 2022.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -78,11 +78,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controllers.HelidonReconciler{
+	if err = (&controllers.OchacafeReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Helidon")
+		setupLog.Error(err, "unable to create controller", "controller", "Ochacafe")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

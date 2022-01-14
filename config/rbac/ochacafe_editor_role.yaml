@@ -1,13 +1,13 @@
-# permissions for end users to edit helidons.
+# permissions for end users to edit ochacaves.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: helidon-editor-role
+  name: ochacafe-editor-role
 rules:
 - apiGroups:
   - ochacafe.oracle.com
   resources:
-  - helidons
+  - ochacaves
   verbs:
   - create
   - delete
@@ -19,6 +19,6 @@ rules:
 - apiGroups:
   - ochacafe.oracle.com
   resources:
-  - helidons/status
+  - ochacaves/status
   verbs:
   - get

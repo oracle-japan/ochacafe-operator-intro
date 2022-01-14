@@ -1,4 +1,4 @@
 ## Append samples you want in your CSV to this file as resources ##
 resources:
-- ochacafe_v1alpha1_helidon.yaml
+- ochacafe_v1alpha1_ochacafe.yaml
 #+kubebuilder:scaffold:manifestskustomizesamples

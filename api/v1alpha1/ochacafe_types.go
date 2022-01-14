@@ -1,5 +1,5 @@
 /*
-Copyright 2021.
+Copyright 2022.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,17 +23,18 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// HelidonSpec defines the desired state of Helidon
-type HelidonSpec struct {
+// OchacafeSpec defines the desired state of Ochacafe
+type OchacafeSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Helidon. Edit helidon_types.go to remove/update
-	Size int32 `json:"size"`
+	// Foo is an example field of Ochacafe. Edit ochacafe_types.go to remove/update
+	Size  int32  `json:"size"`
+	Image string `json:"image"`
 }
 
-// HelidonStatus defines the observed state of Helidon
-type HelidonStatus struct {
+// OchacafeStatus defines the observed state of Ochacafe
+type OchacafeStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 	Nodes []string `json:"nodes"`
@@ -42,24 +43,24 @@ type HelidonStatus struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// Helidon is the Schema for the helidons API
-type Helidon struct {
+// Ochacafe is the Schema for the ochacaves API
+type Ochacafe struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   HelidonSpec   `json:"spec,omitempty"`
-	Status HelidonStatus `json:"status,omitempty"`
+	Spec   OchacafeSpec   `json:"spec,omitempty"`
+	Status OchacafeStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// HelidonList contains a list of Helidon
-type HelidonList struct {
+// OchacafeList contains a list of Ochacafe
+type OchacafeList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Helidon `json:"items"`
+	Items           []Ochacafe `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&Helidon{}, &HelidonList{})
+	SchemeBuilder.Register(&Ochacafe{}, &OchacafeList{})
 }

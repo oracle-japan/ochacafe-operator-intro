@@ -13,7 +13,7 @@ resources:
   controller: true
   domain: oracle.com
   group: ochacafe
-  kind: Helidon
+  kind: Ochacafe
   path: github.com/oracle-japan/ochacafe-operator-intro/api/v1alpha1
   version: v1alpha1
 version: "3"

@@ -16,13 +16,13 @@ import (
 	ochacafev1alpha1 "github.com/oracle-japan/ochacafe-operator-intro/api/v1alpha1"
 )
 
-var _ = Describe("Helidon Operator", func() {
+var _ = Describe("OchaCafe Operator", func() {
 	//! [setup]
 	ctx := context.Background()
 	var stopFunc func()
 
 	BeforeEach(func() {
-		err := k8sClient.DeleteAllOf(ctx, &ochacafev1alpha1.Helidon{}, client.InNamespace("defualt"))
+		err := k8sClient.DeleteAllOf(ctx, &ochacafev1alpha1.Ochacafe{}, client.InNamespace("defualt"))
 		Expect(err).NotTo(HaveOccurred())
 		err = k8sClient.DeleteAllOf(ctx, &appsv1.Deployment{}, client.InNamespace("defualt"))
 		Expect(err).NotTo(HaveOccurred())
@@ -32,7 +32,7 @@ var _ = Describe("Helidon Operator", func() {
 		})
 		Expect(err).ToNot(HaveOccurred())
 
-		reconciler := HelidonReconciler{
+		reconciler := OchacafeReconciler{
 			Client: k8sClient,
 			Scheme: scheme,
 		}
@@ -58,27 +58,27 @@ var _ = Describe("Helidon Operator", func() {
 
 	//! [test]
 	It("should create Deployment", func() {
-		helidon_1 := newHelidon()
-		err := k8sClient.Create(ctx, helidon_1)
+		ochacafe_1 := newOcha()
+		err := k8sClient.Create(ctx, ochacafe_1)
 		time.Sleep(100 * time.Millisecond)
 		Expect(err).NotTo(HaveOccurred())
 
 		dep := appsv1.Deployment{}
 		Eventually(func() error {
-			return k8sClient.Get(ctx, client.ObjectKey{Namespace: "default", Name: "helidon-sample"}, &dep)
+			return k8sClient.Get(ctx, client.ObjectKey{Namespace: "default", Name: "ochacafe-app"}, &dep)
 		}).Should(Succeed())
 		Expect(dep.Spec.Replicas).Should(Equal(pointer.Int32Ptr(3)))
-		Expect(dep.Spec.Template.Spec.Containers[0].Image).Should(Equal("schnatterer/helidon-getting-started"))
+		Expect(dep.Spec.Template.Spec.Containers[0].Image).Should(Equal("nginx"))
 	})
 
 	It("should update status", func() {
-		helidon_info := ochacafev1alpha1.Helidon{}
+		ochacafe_info := ochacafev1alpha1.Ochacafe{}
 		Eventually(func() error {
-			err := k8sClient.Get(ctx, client.ObjectKey{Namespace: "default", Name: "helidon-sample"}, &helidon_info)
+			err := k8sClient.Get(ctx, client.ObjectKey{Namespace: "default", Name: "ochacafe-app"}, &ochacafe_info)
 			if err != nil {
 				return err
 			}
-			if helidon_info.Status.Nodes != nil {
+			if ochacafe_info.Status.Nodes != nil {
 				return errors.New("status should be updated")
 			}
 			return nil
@@ -87,14 +87,15 @@ var _ = Describe("Helidon Operator", func() {
 	//! [test]
 })
 
-func newHelidon() *ochacafev1alpha1.Helidon {
-	return &ochacafev1alpha1.Helidon{
+func newOcha() *ochacafev1alpha1.Ochacafe {
+	return &ochacafev1alpha1.Ochacafe{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "helidon-sample",
+			Name:      "ochacafe-app",
 			Namespace: "default",
 		},
-		Spec: ochacafev1alpha1.HelidonSpec{
-			Size: 3,
+		Spec: ochacafev1alpha1.OchacafeSpec{
+			Size:  3,
+			Image: "nginx",
 		},
 	}
 }

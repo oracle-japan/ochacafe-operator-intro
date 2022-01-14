@@ -1,7 +1,8 @@
 apiVersion: ochacafe.oracle.com/v1alpha1
-kind: Helidon
+kind: Ochacafe
 metadata:
-  name: helidon-sample
+  name: ochacafe-sample
 spec:
   # Add fields here
   size: 2
+  image: nginx

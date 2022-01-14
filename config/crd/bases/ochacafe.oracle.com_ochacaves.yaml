@@ -6,20 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.7.0
   creationTimestamp: null
-  name: helidons.ochacafe.oracle.com
+  name: ochacaves.ochacafe.oracle.com
 spec:
   group: ochacafe.oracle.com
   names:
-    kind: Helidon
-    listKind: HelidonList
-    plural: helidons
-    singular: helidon
+    kind: Ochacafe
+    listKind: OchacafeList
+    plural: ochacaves
+    singular: ochacafe
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Helidon is the Schema for the helidons API
+        description: Ochacafe is the Schema for the ochacaves API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -34,18 +34,21 @@ spec:
           metadata:
             type: object
           spec:
-            description: HelidonSpec defines the desired state of Helidon
+            description: OchacafeSpec defines the desired state of Ochacafe
             properties:
+              image:
+                type: string
               size:
-                description: Foo is an example field of Helidon. Edit helidon_types.go
+                description: Foo is an example field of Ochacafe. Edit ochacafe_types.go
                   to remove/update
                 format: int32
                 type: integer
             required:
+            - image
             - size
             type: object
           status:
-            description: HelidonStatus defines the observed state of Helidon
+            description: OchacafeStatus defines the observed state of Ochacafe
             properties:
               nodes:
                 description: 'INSERT ADDITIONAL STATUS FIELD - define observed state

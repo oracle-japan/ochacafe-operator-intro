@@ -1,5 +1,5 @@
 /*
-Copyright 2021.
+Copyright 2022.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -34,50 +34,50 @@ import (
 	ochacafev1alpha1 "github.com/oracle-japan/ochacafe-operator-intro/api/v1alpha1"
 )
 
-// HelidonReconciler reconciles a Helidon object
-type HelidonReconciler struct {
+// OchacafeReconciler reconciles a Ochacafe object
+type OchacafeReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=ochacafe.oracle.com,resources=helidons,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=ochacafe.oracle.com,resources=helidons/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=ochacafe.oracle.com,resources=helidons/finalizers,verbs=update
+//+kubebuilder:rbac:groups=ochacafe.oracle.com,resources=ochacaves,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=ochacafe.oracle.com,resources=ochacaves/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=ochacafe.oracle.com,resources=ochacaves/finalizers,verbs=update
 //+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
 // TODO(user): Modify the Reconcile function to compare the state specified by
-// the Helidon object against the actual cluster state, and then
+// the Ochacafe object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.10.0/pkg/reconcile
-func (r *HelidonReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *OchacafeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := ctrllog.FromContext(ctx)
 
-	// 1. Fetch the Helidon instance
-	helidon := &ochacafev1alpha1.Helidon{}
-	err := r.Get(ctx, req.NamespacedName, helidon)
+	// 1. Fetch the Ochacafe instance
+	ochacafe := &ochacafev1alpha1.Ochacafe{}
+	err := r.Get(ctx, req.NamespacedName, ochacafe)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			log.Info("1. Fetch the Helidon instance. Helidon resource not found. Ignoring since object must be deleted")
+			log.Info("1. Fetch the Ochacafe instance. Ochacafe resource not found. Ignoring since object must be deleted")
 			return ctrl.Result{}, err
 		}
 		// Error reading the object - requeue the request.
-		log.Error(err, "1. Fetch the Helidon instance. Failed to get Helidon")
+		log.Error(err, "1. Fetch the Ochacafe instance. Failed to get Ochacafe")
 		return ctrl.Result{}, err
 	}
-	log.Info("1. Fetch the Helidon instance. Helidon resource found", "helidon.Name", helidon.Name, "helidon.Namespace", helidon.Namespace)
+	log.Info("1. Fetch the Ochacafe instance. Ochacafe resource found", "Ochacafe.Name", ochacafe.Name, "Ochacafe.Namespace", ochacafe.Namespace)
 
 	// 2. Check if the deployment already exists, if not create a new one
 	found := &appsv1.Deployment{}
-	err = r.Get(ctx, types.NamespacedName{Name: helidon.Name, Namespace: helidon.Namespace}, found)
+	err = r.Get(ctx, types.NamespacedName{Name: ochacafe.Name, Namespace: ochacafe.Namespace}, found)
 	if err != nil && errors.IsNotFound(err) {
 		// Define a new deployment
-		dep := r.deploymentForHelidon(helidon)
+		dep := r.deploymentForOcha(ochacafe)
 		log.Info("2. Check if the deployment already exists, if not create a new one. Creating a new Deployment", "Deployment.Namespace", dep.Namespace, "Deployment.Name", dep.Name)
 		err = r.Create(ctx, dep)
 		if err != nil {
@@ -92,7 +92,7 @@ func (r *HelidonReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	}
 
 	// 3. Ensure the deployment size is the same as the spec
-	size := helidon.Spec.Size
+	size := ochacafe.Spec.Size
 	if *found.Spec.Replicas != size {
 		found.Spec.Replicas = &size
 		err = r.Update(ctx, found)
@@ -105,38 +105,39 @@ func (r *HelidonReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		return ctrl.Result{Requeue: true}, nil
 	}
 
-	// 4. Update the Helidon status with the pod names
-	// List the pods for this helidon's deployment
+	// 4. Update the ochacafe status with the pod names
+	// List the pods for this ochacafe's deployment
 	podList := &corev1.PodList{}
 	listOpts := []client.ListOption{
-		client.InNamespace(helidon.Namespace),
-		client.MatchingLabels(labelsForHelidon(helidon.Name)),
+		client.InNamespace(ochacafe.Namespace),
+		client.MatchingLabels(labelsForOcha(ochacafe.Name)),
 	}
 	if err = r.List(ctx, podList, listOpts...); err != nil {
-		log.Error(err, "4. Update the Helidon status with the pod names. Failed to list pods", "Helidon.Namespace", helidon.Namespace, "Helidon.Name", helidon.Name)
+		log.Error(err, "4. Update the Ochacafe status with the pod names. Failed to list pods", "Ochacafe.Namespace", ochacafe.Namespace, "Ochacafe.Name", ochacafe.Name)
 		return ctrl.Result{}, err
 	}
 	podNames := getPodNames(podList.Items)
-	log.Info("4. Update the Helidon status with the pod names. Pod list", "podNames", podNames)
+	log.Info("4. Update the Ochacafe status with the pod names. Pod list", "podNames", podNames)
 
 	// Update status.Nodes if needed
-	if !reflect.DeepEqual(podNames, helidon.Status.Nodes) {
-		helidon.Status.Nodes = podNames
-		err := r.Status().Update(ctx, helidon)
+	if !reflect.DeepEqual(podNames, ochacafe.Status.Nodes) {
+		ochacafe.Status.Nodes = podNames
+		err := r.Status().Update(ctx, ochacafe)
 		if err != nil {
-			log.Error(err, "4. Update the Helidon status with the pod names. Failed to update Helidon status")
+			log.Error(err, "4. Update the Ochacafe status with the pod names. Failed to update Ochacafe status")
 			return ctrl.Result{}, err
 		}
 	}
-	log.Info("4. Update the Helidon status with the pod names. Update helidon.Status", "helidon.Status.Nodes", helidon.Status.Nodes)
+	log.Info("4. Update the Ochacafe status with the pod names. Update Ochacafe.Status", "Ochacafe.Status.Nodes", ochacafe.Status.Nodes)
 
 	return ctrl.Result{}, nil
 }
 
-// deploymentForHelidon returns a helidon Deployment object
-func (r *HelidonReconciler) deploymentForHelidon(m *ochacafev1alpha1.Helidon) *appsv1.Deployment {
-	ls := labelsForHelidon(m.Name)
+// deploymentForOcha returns a something Deployment object
+func (r *OchacafeReconciler) deploymentForOcha(m *ochacafev1alpha1.Ochacafe) *appsv1.Deployment {
+	ls := labelsForOcha(m.Name)
 	replicas := m.Spec.Size
+	image := m.Spec.Image
 
 	dep := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -154,25 +155,23 @@ func (r *HelidonReconciler) deploymentForHelidon(m *ochacafev1alpha1.Helidon) *a
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{{
-						Image: "schnatterer/helidon-getting-started",
-						Name:  "helidon-app",
+						Image: image,
+						Name:  "ochacafe-app",
 						Ports: []corev1.ContainerPort{{
-							ContainerPort: 8080,
+							ContainerPort: 80,
 						}},
 					}},
 				},
 			},
 		},
 	}
-	// Set Helidon instance as the owner and controller
+	// Set Ochacafe instance as the owner and controller
 	ctrl.SetControllerReference(m, dep, r.Scheme)
 	return dep
 }
 
-// labelsForHelidon returns the labels for selecting the resources
-// belonging to the given helidon CR name.
-func labelsForHelidon(name string) map[string]string {
-	return map[string]string{"app": "helidon", "helidon_cr": name}
+func labelsForOcha(name string) map[string]string {
+	return map[string]string{"app": "ochacafe", "ochacafe_cr": name}
 }
 
 // getPodNames returns the pod names of the array of pods passed in
@@ -185,9 +184,9 @@ func getPodNames(pods []corev1.Pod) []string {
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *HelidonReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *OchacafeReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&ochacafev1alpha1.Helidon{}).
+		For(&ochacafev1alpha1.Ochacafe{}).
 		Owns(&appsv1.Deployment{}).
 		Complete(r)
 }

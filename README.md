@@ -1,11 +1,9 @@
-# [OCHaCafe Season5 #1 「Kubernetes Operator超入門」](https://ochacafe.connpass.com/event/232810/)のなんちゃってHelidonOperator
+# [OCHaCafe Season5 #1 「Kubernetes Operator超入門」](https://ochacafe.connpass.com/event/232810/)の"任意のDeploymentを作成してみるOperator"
+
 
 ## 1. このOperatorが行うこと
 
 ![img/001.png](img/001.png)
-
-- 補足
-  - Operatorに定義しているコンテナイメージを変更すれば任意のコンテナイメージをデプロイすることも可能
 
 ## 2. Operatorのデプロイ
 
@@ -24,7 +22,7 @@ IMAGE_TAG_BASE ?= oracle.com/ochacafe-operator-intro
 例：
 
 ```sh
-IMAGE_TAG_BASE ?= nrt.ocir.io/orasejapan/helidon_operator
+IMAGE_TAG_BASE ?= nrt.ocir.io/orasejapan/ochacafe_operator
 ```
 
 ### OLM(Operator Lifecyle Management)を利用する場合
@@ -55,7 +53,7 @@ operator-sdk run bundle <プッシュ先のコンテナ・レジストリのフ�
 例：
 
 ```sh
-operator-sdk run bundle nrt.ocir.io/orasejapan/helidon_operator-bundle:v0.0.1
+operator-sdk run bundle nrt.ocir.io/orasejapan/ochacafe_operator-bundle:v0.0.1
 ```
 
 ### ダイレクトデプロイを利用する場合
@@ -75,7 +73,7 @@ make deploy
 ## 3.CR(カスタム・リソース)のデプロイ
 
 ```sh
-kubectl apply -f config/samples/ochacafe_v1alpha1_helidon.yaml
+kubectl apply -f config/samples/ochacafe_v1alpha1_ochacafe.yaml
 ```
 
 ## 4.クリーンアップ
