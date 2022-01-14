@@ -30,7 +30,7 @@ IMAGE_TAG_BASE ?= nrt.ocir.io/orasejapan/ochacafe_sample_operator
 make docker-build docker-push
 ```
 
-### OLM(Operator Lifecyle Management)を利用する場合
+### OLM(Operator Lifecyle Management)を利用したデプロイ
 
 - 前提条件
   - operator-sdkコマンドがインストールされていること
@@ -61,7 +61,7 @@ operator-sdk run bundle <共通手順で定義したイメージのフルパス>
 operator-sdk run bundle nrt.ocir.io/orasejapan/ochacafe_sample_operator-bundle:v0.0.1
 ```
 
-### ダイレクトデプロイを利用する場合
+### ダイレクトデプロイ
 
 #### 1.デプロイ
 
