@@ -4,6 +4,9 @@
 
 ![img/001.png](img/001.png)
 
+- 補足
+  - Update時にimageは変更されないので、ご注意ください。(最初に指定したイメージのままになります)
+
 ## 2. Operatorのデプロイ
 
 ### 共通手順
@@ -43,7 +46,7 @@ make docker-build docker-push
 operator-sdk olm install
 ```
 
-#### 2.Operatorコンテナイメージのビルドとプッシュ
+#### 2.バンドルイメージのビルドとプッシュ
 
 ```sh
 make bundle bundle-build bundle-push
